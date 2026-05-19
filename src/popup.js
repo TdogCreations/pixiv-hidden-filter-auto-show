@@ -24,6 +24,27 @@
     }
   }
 
+  function setI18nWithCode(el, message) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+    const regex = /<code>([^<]*)<\/code>/g;
+    let lastIndex = 0;
+    let match;
+    while ((match = regex.exec(message)) !== null) {
+      if (match.index > lastIndex) {
+        el.appendChild(
+          document.createTextNode(message.slice(lastIndex, match.index))
+        );
+      }
+      const code = document.createElement("code");
+      code.textContent = match[1];
+      el.appendChild(code);
+      lastIndex = regex.lastIndex;
+    }
+    if (lastIndex < message.length) {
+      el.appendChild(document.createTextNode(message.slice(lastIndex)));
+    }
+  }
+
   function applyI18n() {
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
@@ -33,7 +54,7 @@
     document.querySelectorAll("[data-i18n-html]").forEach((el) => {
       const key = el.getAttribute("data-i18n-html");
       const msg = t(key);
-      if (msg) el.innerHTML = msg;
+      if (msg) setI18nWithCode(el, msg);
     });
     document.documentElement.lang = (api.i18n && api.i18n.getUILanguage
       ? api.i18n.getUILanguage()
