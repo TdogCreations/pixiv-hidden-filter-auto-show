@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--
+      ============================================================
+      GOOGLE SEARCH CONSOLE VERIFICATION
+      1. Go to https://search.google.com/search-console
+      2. Add a URL-prefix property:
+         https://tdogcreations.github.io/pixiv-hidden-filter-auto-show/
+      3. Choose the "HTML tag" verification method.
+      4. Replace REPLACE_WITH_YOUR_TOKEN below with the content value
+         Google gives you, then commit + push. Then click Verify.
+      ============================================================
+    -->
+    <meta name="google-site-verification" content="REPLACE_WITH_YOUR_TOKEN" />
+
+    <title>
+      Disable Pixiv's "Works that may not be relevant to your search" filter —
+      Pixiv Hidden Filter Auto Show
+    </title>
+    <meta
+      name="description"
+      content="Free Chrome &amp; Firefox extension that permanently turns off Pixiv's 'Works that may not be relevant to your search' filter, which Pixiv resets on every search. Always show all Pixiv search results."
+    />
+    <meta
+      name="keywords"
+      content="pixiv, works that may not be relevant to your search, pixiv search filter, show hidden pixiv works, pixiv show all results, disable pixiv filter, 検索を妨げる可能性がある作品, pixiv 検索 非表示 解除"
+    />
+    <link rel="icon" type="image/png" href="icon-32.png" />
+
+    <!-- Open Graph / social preview -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Pixiv Hidden Filter Auto Show — always show all Pixiv search results"
+    />
+    <meta
+      property="og:description"
+      content="Permanently disables Pixiv's 'Works that may not be relevant to your search' filter so all results stay visible on every search."
+    />
+    <meta property="og:image" content="popup-overview.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link
+      rel="canonical"
+      href="https://tdogcreations.github.io/pixiv-hidden-filter-auto-show/"
+    />
+
+    <style>
+      :root {
+        --bg: #1e1b4b;
+        --bg2: #312e81;
+        --fg: #f5f5fa;
+        --muted: #b9b8d6;
+        --accent: #fbbf24;
+        --card: #2a2664;
+        --border: #3d3a7a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: var(--fg);
+        background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
+        background-attachment: fixed;
+      }
+      a {
+        color: var(--accent);
+      }
+      .wrap {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      header.hero {
+        text-align: center;
+        padding: 64px 20px 48px;
+      }
+      .hero img.logo {
+        width: 112px;
+        height: 112px;
+        border-radius: 24px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      }
+      h1 {
+        font-size: 2rem;
+        margin: 24px 0 8px;
+        line-height: 1.25;
+      }
+      .tagline {
+        font-size: 1.1rem;
+        color: var(--muted);
+        max-width: 620px;
+        margin: 0 auto 28px;
+      }
+      .btns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: transform 0.1s ease, background 0.15s ease;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #1e1b4b;
+      }
+      .btn-secondary {
+        background: var(--card);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+      .pending {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 14px;
+      }
+      section {
+        padding: 36px 0;
+        border-top: 1px solid var(--border);
+      }
+      h2 {
+        font-size: 1.5rem;
+        margin: 0 0 16px;
+      }
+      .problem-list li {
+        margin-bottom: 10px;
+      }
+      .phrase {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .features li {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+      }
+      .features b {
+        color: var(--accent);
+      }
+      .shots img {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 18px;
+        display: block;
+      }
+      code {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2px 6px;
+        border-radius: 5px;
+        font-size: 0.9em;
+      }
+      .jp {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 24px;
+      }
+      footer {
+        text-align: center;
+        padding: 40px 20px 56px;
+        color: var(--muted);
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border);
+      }
+      footer a {
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap">
+        <img class="logo" src="icon-128.png" alt="Pixiv Hidden Filter Auto Show icon" />
+        <h1>Always show works hidden by Pixiv's search filter</h1>
+        <p class="tagline">
+          A free Chrome &amp; Firefox extension that permanently turns off
+          Pixiv's <span class="phrase">"Works that may not be relevant to your
+          search"</span> filter — the one Pixiv resets on every single search.
+        </p>
+        <div class="btns">
+          <!-- TODO: once the Chrome Web Store listing is approved, swap this href
+               to the chromewebstore.google.com/detail/... URL -->
+          <a class="btn btn-primary" href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show/releases/latest">Download for Chrome / Edge / Brave</a>
+          <!-- TODO: once the AMO listing is approved, swap this href to the
+               addons.mozilla.org/firefox/addon/... URL -->
+          <a class="btn btn-secondary" href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show/releases/latest">Download for Firefox</a>
+          <a class="btn btn-secondary" href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show">Source on GitHub</a>
+        </div>
+        <p class="pending">
+          Chrome Web Store &amp; Firefox Add-ons listings are pending review —
+          for now, install from the GitHub release (instructions in the repo).
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section id="problem">
+        <h2>Does this solve your problem?</h2>
+        <ul class="problem-list">
+          <li>
+            Pixiv shows
+            <span class="phrase">"Works that may not be relevant to your
+            search"</span> and hides results you actually want to see.
+          </li>
+          <li>
+            You set <em>Search options → Other → "Works that may not be
+            relevant to your search" → Show</em>, but it
+            <strong>resets to "Hide" on the very next search</strong>.
+          </li>
+          <li>Pixiv is suddenly showing <strong>fewer search results</strong>.</li>
+          <li>
+            You want to <strong>show all Pixiv search results</strong> and
+            disable the relevance filter permanently.
+          </li>
+        </ul>
+        <p>
+          If any of those sound familiar, install it and forget about it — the
+          filter stays off automatically on every search.
+        </p>
+      </section>
+
+      <section id="features">
+        <h2>Features</h2>
+        <ul class="features">
+          <li>
+            <b>Always on.</b> Adds <code>dgw=1</code> to every Pixiv search and
+            tag URL so hidden works always appear.
+          </li>
+          <li>
+            <b>Survives navigation.</b> The filter stays off when you click
+            tags, paginate, change sort order, or hit back/forward.
+          </li>
+          <li>
+            <b>Optional logo redirect.</b> Make the Pixiv logo open your
+            followers' new-works feed instead of the recommendations page.
+          </li>
+          <li>
+            <b>Private.</b> No data collected, no external servers, no remote
+            code. Just one local on/off setting.
+          </li>
+          <li>
+            <b>English &amp; Japanese.</b> The popup follows your browser
+            language automatically.
+          </li>
+          <li>
+            <b>Lightweight.</b> Plain JavaScript, Manifest V3, no trackers, no
+            dependencies.
+          </li>
+        </ul>
+      </section>
+
+      <section id="screenshots" class="shots">
+        <h2>Screenshots</h2>
+        <img src="feature-demo.png" alt="dgw=1 added automatically to Pixiv tag and search URLs, revealing hidden works" />
+        <img src="popup-overview.png" alt="The extension popup with the search-filter toggle and optional logo-redirect toggle" />
+      </section>
+
+      <section id="japanese">
+        <h2>日本語</h2>
+        <div class="jp">
+          <p>
+            Pixiv は検索のたびに
+            <span class="phrase">「検索を妨げる可能性がある作品」</span>
+            フィルターをリセットします。検索オプション → その他の条件 で
+            「表示する」に設定しても、検索するたびに「表示しない」に戻って
+            しまいます。
+          </p>
+          <p>
+            この拡張機能は、Pixiv の検索・タグページの URL に自動的に
+            <code>dgw=1</code> を付与することで、このフィルターを常に無効化
+            します。毎回設定を変更する必要はもうありません。インストール
+            するだけで、検索結果が常にすべて表示されます。
+          </p>
+          <p>
+            <a href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show#install">インストール方法はこちら（GitHub）</a>
+          </p>
+        </div>
+      </section>
+
+      <section id="privacy">
+        <h2>Privacy</h2>
+        <p>
+          The extension does not collect, transmit, log, or share any personal
+          data. It stores only the on/off toggle settings using your browser's
+          built-in sync storage, and contacts no external server. Full policy:
+          <a href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show/blob/main/PRIVACY.md">PRIVACY.md</a>.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <a href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show">GitHub</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show/releases/latest">Latest release</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/TdogCreations/pixiv-hidden-filter-auto-show/blob/main/PRIVACY.md">Privacy</a>
+      </p>
+      <p>
+        Unofficial, fan-made tool. Not affiliated with, endorsed by, or
+        sponsored by pixiv Inc.
+      </p>
+    </footer>
+  </body>
+</html>
